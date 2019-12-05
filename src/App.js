@@ -1,26 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
+import { askForPermissioToReceiveNotifications } from './push-notification';
+import * as firebase from 'firebase';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  state = {  }
+
+  componentDidMount() {
+    if ( !this.isTokenSentToServer() ) {
+      askForPermissioToReceiveNotifications();
+    }
+
+    navigator.serviceWorker.addEventListener("message", (message) => console.log("Message background: ", message));
+
+    // const messaging = firebase.messaging();
+
+    // messaging.onMessage((payload) => console.log('Message foreground received. ', payload));
+  }
+
+  isTokenSentToServer = () => {
+    return window.localStorage.getItem('sentToServer') === '1';
+  }
+
+  render() { 
+    return ( 
+      <div className="App">
+        <header className="App-header">
+          <p>
+            Firebase Push Notifications
+          </p>
+        </header>
+      </div>
+    );
+  }
 }
-
+ 
 export default App;
